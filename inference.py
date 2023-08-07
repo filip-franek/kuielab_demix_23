@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import soundfile
+import sys
 
 from my_submission.user_config import MySeparationModel
 
@@ -31,8 +32,9 @@ class Inference:
                             samplerate=output_sample_rates[instrument])
     
     def separate_music_file(self, filename):
-        foldername = ""
-        full_path = os.path.join(self.dataset_dir, foldername, filename)
+        foldername = os.path.splitext(filename)[0]
+
+        full_path = os.path.join(self.dataset_dir, filename)
         music_array, samplerate = soundfile.read(full_path)
         
         separated_music_arrays, output_sample_rates = self.model.separate_music_file(music_array, samplerate)
@@ -47,4 +49,5 @@ class Inference:
 
 if __name__ == "__main__":
     model = Inference()
-    model.separate_music_file("audio_example.mp3")
+    for argument in sys.argv[1:]:
+        model.separate_music_file(argument)
